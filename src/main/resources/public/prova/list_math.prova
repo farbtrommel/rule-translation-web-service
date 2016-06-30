@@ -1,0 +1,127 @@
+% ------------------------------------------------------------------------------------------------------
+%  Copyright (C) 1999-2007 <a href="mailto:adrian.paschke@gmx.de">Adrian Paschke</a>
+% 
+% The Contractlog library is part of the Rule Based Service Level Agreement (RBSLA)
+%  project, available at 
+% <a href="https://sourceforge.net/projects/rbsla">SourceForge RBSLA</a>
+% 
+% More information <a href="http://ibis.in.tum.de/staff/paschke/rbsla/index.htm">RBSLA Project Site</a>
+%
+% This library is free software; you can redistribute it and/or
+% modify it under the terms of the GNU Lesser General Public
+% License as published by the Free Software Foundation; either
+%  version 2 of the License, or (at your option) any later version.
+% 
+% This library is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+% Lesser General Public License for more details.
+%
+% You should have received a copy of the GNU Lesser General Public
+% License along with this library; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+%
+% ------------------------------------------------------------------------------------------------------
+
+% ------------------------------------------------------------------------------------------------------
+% List Libary
+% 
+% Provides mathemetical list operations like sum, min, max etc.
+% Can operate with different operations and sets.
+% For user definied sets and operations you have to define these predicates
+%
+%   null_element()
+%   less()				defines automatically math_max(), math_min()
+%   lessequ()			defines automatically between()
+%   math_add()
+%   
+%
+ % @author <A HREF="mailto:adrian.paschke@gmx.de">Adrian Paschke</A>
+ % @version 0.2 <1 Nov 2006>
+ % @since 0.1
+ % @dependencies math.prova
+% ------------------------------------------------------------------------------------------------------
+
+moduleOID("./ContractLog/list_math.prova").
+
+% --------------------------------------------------------------------- 
+% list_sum(Result, List)
+%
+% calculates the sum of a list
+
+list_sum(NULL, []):-
+	null_element(NULL).
+	
+list_sum(R, [A|AS]) :-
+	list_sum(B, AS), 
+	add(R, A, B).
+	
+
+% --------------------------------------------------------------------- 
+% list_max(Result, List)
+%
+% get the maximum element in the list
+% at least one element is necessary
+
+list_max(A, [A]) :- 
+	!.
+	
+list_max(R, [A|AS]) :-
+	list_max(B, AS), 
+	max(R, A, B).
+
+
+% --------------------------------------------------------------------- 
+% list_min(List, Result)
+%
+% get the minimum element in the list
+% at least one element is necessary
+
+list_min(A, [A]) :- 
+	!.
+
+list_min(R, [A|AS]) :-
+	list_min(B, AS), 
+	min(R, A, B).
+
+
+% --------------------------------------------------------------------- 
+% list_filter_between(A, B, List, ResultList)
+%
+% filter all elements, that are not in the intervall [A, B]
+
+list_filter_between(A, B, [], []) :-!.
+	
+list_filter_between(A, B, [L|LS1], [L|LS2]):-
+	between(A, L, B),
+	list_filter_between(A, B, LS1, LS2),!.
+	
+list_filter_between(A, B, [L|LS1], LS2):-
+	list_filter_between(A, B, LS1, LS2), !.
+	
+
+% --------------------------------------------------------------------- 
+% list_mean(Result, List)
+%
+% calculates the median.
+% Assumes that the list already sortet
+
+list_mean(R, L) :-
+	list_sum(SUM, L),
+	size(SIZE, L),
+	divide(R, SUM, SIZE).
+
+
+% --------------------------------------------------------------------- 
+% list_median(Result, List)
+%
+% calculates the median.
+% Assumes that the list already sortet
+
+list_median(R, L) :-
+	size(SIZE, L),
+	divide(S2, SIZE, 2),
+	floor(S3, S2),
+	println(["median",SIZE,S2,S3]),
+	element_at(R, S3, L).
+

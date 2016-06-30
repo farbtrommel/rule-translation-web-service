@@ -1,0 +1,324 @@
+% ------------------------------------------------------------------------------------------------------
+%  Copyright (C) 1999-2007 <a href="mailto:adrian.paschke@gmx.de">Adrian Paschke</a>
+% 
+% The Contractlog library is part of the Rule Based Service Level Agreement (RBSLA)
+%  project, available at 
+% <a href="https://sourceforge.net/projects/rbsla">SourceForge RBSLA</a>
+% 
+% More information <a href="http://ibis.in.tum.de/staff/paschke/rbsla/index.htm">RBSLA Project Site</a>
+%
+% This library is free software; you can redistribute it and/or
+% modify it under the terms of the GNU Lesser General Public
+% License as published by the Free Software Foundation; either
+%  version 2 of the License, or (at your option) any later version.
+% 
+% This library is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+% Lesser General Public License for more details.
+%
+% You should have received a copy of the GNU Lesser General Public
+% License along with this library; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+%
+% ------------------------------------------------------------------------------------------------------
+
+% ------------------------------------------------------------------------------------------------------
+% List Libary
+% 
+% The List Library provides basic List predicates.
+%
+% @author <A HREF="mailto:adrian.paschke@gmx.de">Adrian Paschke</A>
+ % @version 0.2 <1 Nov 2006>
+ % @since 0.1
+% ------------------------------------------------------------------------------------------------------
+
+moduleOID("./ContractLog/list.prova").
+
+% --------------------------------------------------------------------- 
+% member(X, List)
+%
+% used to convert a list to a set
+member(X, [X|XS]).
+member(X, [_|XS]) :-
+	member(X,XS).
+
+
+
+
+% --------------------------------------------------------------------- 
+% head(X, List)
+%
+% first element of a list
+
+head(X,[X|_]):-!.
+head(X,X).
+
+% --------------------------------------------------------------------- 
+% tail(List, List)
+%
+% list withgout the first element
+
+tail(L,[_|L]):-!. 
+tail([],X).
+
+
+% --------------------------------------------------------------------- 
+% first(X, List)
+%
+% first element of the list
+
+first(F,[F|_]). 
+
+
+% --------------------------------------------------------------------- 
+% last(X, List)
+%
+% last Element of the list
+
+last(L,[L]).
+last(L,[H|T]) :- 
+	last(L,T).
+
+
+% --------------------------------------------------------------------- 
+% size(Size, List)
+%
+% size if a list
+size(N, []) :- N=0.
+size(N, [H|T]) :- 
+	size(N1, T), 
+	add(N, N1, 1),
+	!.
+
+
+% --------------------------------------------------------------------- 
+% element_at(List, Pos, Element)
+% element_at(Element, Pos, List)
+%
+% element at postion Pos in the List
+
+element_at(L1, Z, [L2|LS]):- 
+	equal(Z, 0),
+	L1 =L2, 
+	!.
+
+element_at(Z, X, [L|LS]) :-
+	subtract(X1, X, 1), 
+	element_at(Z, X1, LS).
+
+element_at_list([],Pos,[]).
+element_at_list([Z|Result], Pos, [X|XS]) :-
+	element_at(Z, Pos, X),
+	element_at_list(Result, Pos, XS).
+
+% --------------------------------------------------------------------- 
+% prefix(List1, List2)
+%
+% List1 is prefix of List2
+% e.g. prefix([1,2,3],[1,2,3,4]) 
+
+prefix([],_).
+prefix([H|T1],[H|T2]) :- 
+	prefix(T1,T2).
+
+
+% --------------------------------------------------------------------- 
+% suffix(List1, List2)
+%
+% List1 is suffix of List2
+
+suffix(S,S).
+suffix([H|T],L) :- 
+	suffix(T,L).
+
+
+% --------------------------------------------------------------------- 
+% append(ResultList, List1, List2)
+%
+% Append List1 and List2
+
+append(L,[],L).
+append([H|LT],[H|T],L) :-
+	append(LT,T,L).
+
+
+% --------------------------------------------------------------------- 
+% sublist(List1, List2)
+%
+% List2 contains List1
+
+sublist(S,L) :-
+	prefix(S,L).
+sublist(S,[_|T]) :-
+	sublist(S,T).
+
+
+
+
+% --------------------------------------------------------------------- 
+% split(List,Element,Rest)
+%
+% Splits a list at the position where the element occurs first and returns the rest of the list
+
+split([H|T],H,T).
+split([H|T],E,R):-
+	split(T,E,R),!.
+
+
+% --------------------------------------------------------------------- 
+% delete(ListResult, X, List)
+%
+% deletes a given Element one time
+% you will get many results, if the element occurs more than one time!
+
+delete(T,X,[X|T]).
+delete([Y|NT],X,[Y|T]) :- 
+	delete(NT,X,T).
+
+% --------------------------------------------------------------------- 
+% delete_all(ListResult, X, List)
+%
+% deletes a given Element one time, also if it is contains more
+% than one time. X should be instantiated with ONE value
+
+delete_all([],X,[]).
+delete_all(NT,X,[X|T]) :-
+	delete_all(NT,X,T),
+	!.  
+delete_all([Y|NT],X,[Y|T]) :- 
+	delete_all(NT,X,T). 
+	
+% --------------------------------------------------------------------- 
+% reverselist(ReverseList, List)
+%
+% Reverse a list.
+
+reverselist([],[]):-!.
+
+reverselist([X],[X]):-!.
+
+reverselist([Y, X],[X, Y]):-!.
+
+reverselist([Y|YS], XS) :-
+	last(Y, XS),
+	reversetail(ZS, XS),	
+	reverselist(YS, ZS).	
+
+% --------------------------------------------------------------------- 
+% reversetail(ReverseTail, List)
+%
+% Tail from back of the list.
+
+reversetail([],[X]) :-
+	!.
+
+reversetail([X],[X, Y]) :-
+	!.
+
+reversetail([X|YS],[X|XS]) :-
+	reversetail(YS, XS).	
+
+% --------------------------------------------------------------------- 
+% union(Union,List1,List2)
+%
+% Union of two lists
+union(Union,List1,List2):-
+	append(Union,List1,List2).
+
+% --------------------------------------------------------------------- 
+% intersection(Intersection, List1,List2)
+%
+% Intersection of two lists	
+intersection([],[],List2).
+intersection([Head1|TmpIntersec],[Head1|Tail],List2):-
+	member(Head1,List2),
+	intersection(TmpIntersec,Tail,List2),!.
+intersection(TmpIntersec,[Head|Tail],List2):-	
+	intersection(TmpIntersec,Tail,List2).
+
+% --------------------------------------------------------------------- 
+% complement(Complement, List1, List2)
+%
+% The complement of two lists
+complement([],[],List2).
+complement(TmpComp,[Head|Tail],List2):-
+	member(Head,List2),	
+	complement(TmpComp,Tail,List2),!.
+complement([Head|TmpComp],[Head|Tail],List2):-		
+	complement(TmpComp,Tail,List2).
+	
+	
+% --------------------------------------------------------------------- 
+% sort(SortedList, List)
+%
+% sort the list entries
+sort(SortedList, List):-
+	% TODO
+	SortedList = List.
+
+
+% --------------------------------------------------------------------- 
+% list_min(ResultList, List, Pos)
+% 
+% 
+list_min(Result, [X], Pos) :-
+	Result = X,
+	!.
+list_min(Result, [X|XS], Pos) :- 
+	list_min(Result, XS, Pos),
+	!.
+list_min(Result, [X|XS], Pos) :- 
+	list_min(R1, XS, Pos),
+	element_at(R2, Pos, R1),
+	element_at(R3, Pos, X),
+	lessThan(R2,R3),
+	Result = R3,
+	!.
+
+% --------------------------------------------------------------------- 
+% sortby_min(ResultList, List, Pos)
+% 
+% 
+sortby_min(R, [], _).
+sortby_min([X], [X], Pos).
+sortby_min([E|ResultList], List, Pos) :-
+	list_min(E, List, Pos),
+	delete(R, E, List),
+	sortby_min(ResultList, R, Pos),
+	!.
+
+
+
+% --------------------------------------------------------------------- 
+% execute(ResultList, List)
+% List is a list of predicates, only true pradicates got added to ResultList.
+% 
+execute([], []).
+execute([X|YS], [X|XS]) :- 
+	derive(X),
+	execute(YS, XS),
+	!.
+
+execute(R, [Head|Tail]) :-
+	execute(R, Tail),
+	!.
+
+% --------------------------------------------------------------------- 
+% convertArrayListToList(ResultList, java.util.ArrayList)
+% 
+% 
+
+convertArrayListToList(Result, Array) :-
+	S = Array.size(),
+	subtract(S1, S, 1),
+	convertArrayListToList(Result, Array, S1),
+	!.
+
+convertArrayListToList([], Array, -1).
+
+convertArrayListToList([E|Result], Array, S) :-
+	subtract(S1, S, 1),
+	convertArrayListToList(Result, Array, S1),
+	E = Array.get(S),
+	!.

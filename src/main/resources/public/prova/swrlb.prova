@@ -1,0 +1,217 @@
+%
+% Comparison
+%
+compare(R, X, Y) :- 
+	R = ws.prova.comparators.StringComparator.stringComparator.compare(X, Y).
+
+%@attr("iri", "swrlb:lessThanOrEqual")
+lessThanOrEqual(X, Y) :-
+	bound(X), 
+	bound(Y),
+	X <= Y, 
+	!.
+%lessThanOrEqual(X, Y) :-
+%	bound(X),
+%	bound(Y),
+%	compare(R, X, Y),
+%	R <= 0,
+%	!.
+%@attr("iri", "swrlb:lessThan")
+lessThan(X, Y) :-
+	bound(X), 
+	bound(Y),
+	X < Y,
+	!.
+%lessThan(X, Y) :-
+%	bound(X),
+%	bound(Y),
+%	compare(R, X, Y),
+%	R < 0,
+%	!.
+%@attr("iri", "swrlb:greaterThanOrEqual")
+greaterThanOrEqual(X, Y) :-
+	bound(X), 
+	bound(Y),
+	X >= Y, 
+	!.
+%greaterThanOrEqual(X, Y) :-
+%	bound(X),
+%	bound(Y),
+%	compare(R, X, Y),
+%	R >= 0,
+%	!.
+%@attr("iri", "swrlb:greaterThan")
+greaterThan(X, Y) :-
+	bound(X), 
+	bound(Y),
+	X > Y,
+	!.
+%greaterThan(X, Y) :-
+%	bound(X),
+%	bound(Y),
+%	compare(R, X, Y),
+%	R > 0,
+%	!.
+%between(T1, T, T2) :-
+%	lessThanOrEqual(T1, T),
+%	lessThanOrEqual(T, T2),
+%	!.
+
+%@attr("iri", "swrlb:notEqual")
+notEqual(X, Y) :- 
+	bound(X), 
+	bound(Y),
+	X != Y, !.
+
+%@attr("iri", "swrlb:equal")
+equal(X, Y) :-
+	bound(X), 
+	bound(Y),
+	X = Y, !.
+
+
+%
+% min(R, 2, 3) => R=3
+%
+%@attr("iri", "swrlb:max")
+max(R, Number.X, Number.Y) :-
+	bound(X), 
+	bound(Y),
+	lessThan(X, Y),
+	R = Y,
+	!.
+%@attr("iri", "swrlb:max")
+max(R, Number.X, Number.Y) :-
+	bound(X), 
+	bound(Y),
+	R = X,
+	!.
+%@attr("iri", "swrlb:max")
+max(R, X, Y) :-
+	bound(X), 
+	bound(Y),
+	compare(R, X, Y),
+	lessThan(R, 0),
+	R = Y,
+	!.
+%@attr("iri", "swrlb:max")
+max(R, X, Y) :-
+	bound(X), 
+	bound(Y),
+	R = X,
+	!.
+
+%
+% min(R, 2, 3) => R=2
+%
+%@attr("iri", "swrlb:min")
+min(R, Number.X, Number.Y) :-
+	bound(X), 
+	bound(Y),
+	lessThan(X, Y),
+	R = X,
+	!.
+	
+%@attr("iri", "swrlb:min")
+min(R, Number.X, Number.Y) :-
+	bound(X), 
+	bound(Y),
+	R = Y,
+	!.
+%@attr("iri", "swrlb:min")
+min(R, X, Y) :-
+	bound(X), 
+	bound(Y),
+	compare(R, X, Y),
+	greaterThan(R, 0),
+	R = Y,
+	!.
+%@attr("iri", "swrlb:min")
+min(R, X, Y) :-
+	bound(X), 
+	bound(Y),
+	R = X,
+	!.
+
+
+% null_element(VALUE1)
+%
+% null_element
+
+null_element(0).
+
+%
+% Math
+%
+%@attr("iri", "swrlb:add")
+add(R, A, B) :- 
+	bound(A),
+	bound(B),
+	R = A + B,
+	!.
+%@attr("iri", "swrlb:subtract")
+subtract(R, A, B) :- 
+	bound(A),
+	bound(B),
+	R = A - B,
+	!.
+%@attr("iri", "swrlb:multiply")
+multiply(R, A, B) :-
+	bound(A),
+	bound(B),
+	R = A * B,
+	!.
+%@attr("iri", "swrlb:divide")
+divide(R, A, B) :- 
+	bound(A),
+	bound(B),
+	R = A / B,
+	!.
+%@attr("iri", "swrlb:modolu")
+modolu(R, X, Y) :- 
+	bound(X),
+	bound(Y),
+	R = X mod Y,
+	!.
+%@attr("iri", "swrlb:pow")
+pow(R, A, B) :- 
+	bound(A),
+	bound(B),
+	R = java.lang.Math.pow(A, B),
+	!.
+%@attr("iri", "swrlb:ceil")
+ceil(R, A) :- 
+	bound(A),
+	R = java.lang.Math.ceil(A),
+	!.
+%@attr("iri", "swrlb:floor")
+floor(R, A) :- 
+	bound(A),
+	R = java.lang.Math.floor(A),
+	!.
+%@attr("iri", "swrlb:abs")
+abs(R, A) :- 
+	bound(A),
+	R = java.lang.Math.abs(A),
+	!.
+%@attr("iri", "swrlb:sin")
+sin(R, A) :- 
+	bound(A),
+	R = java.lang.Math.sin(A),
+	!.
+%@attr("iri", "swrlb:cos")
+cos(R, A) :-
+	bound(A),
+	R = java.lang.Math.cos(A),
+	!.
+%@attr("iri", "swrlb:tan")
+tan(R, A) :-
+	bound(A),
+	R = java.lang.Math.tan(A),
+	!.
+
+%
+% Lists
+%
+:- eval(consult('./list.prova')).
+:- eval(consult('./list_math.prova')).

@@ -1,0 +1,152 @@
+%
+% decisionTable
+%
+%
+
+decisionTable(Key, Name, Label, Entries, TableId) :-
+	decisionTable(TableId, HitPolicy, Aggregation),
+	outputExpression(TableId, Key, Name, Label, DataType),
+	findall([outputEntry, X|Xs],[outputEntry, X|Xs],R1),
+    Entries = Name.
+	%convertArrayListToList(R2, R1),
+	%fetchValues(R3, R2),
+	%decisionTableHit(Entries, R3, Hit, Aggregation).
+
+element(Stmt, Iter) :-
+
+fetchValues([], []).
+fetchValues([E|Result], [X|XS]) :-
+	fetchValues(Result, XS),
+	fetchValue(E, X).
+
+fetchValue(E, [I0, I1, I2, I3, I4, I5]) :-
+	derive([I0, I1, I2, I3, I4, Value]),
+	E = [I0, I1, I2, I3, I4, Value],
+	!.
+
+
+%
+% HitPolicy = U=UNIQUE | F=FIRST | R = RULE ORDER | O = OUTPUT ORDER |
+% P = PRIORITY | C = COLLECT | C+ = COLLECT-SUM | C< = COLLECT-MIN | C> = COLLECT-MAX | C# = COLLECT-COUNT
+%
+decisionTableHit(R,[],_,_).
+
+%
+% Collection
+%
+decisionTableHit(R, L, "COLLECT", Aggregation) :-
+	R = L,
+	!.
+
+%
+% Collection Sum
+%
+decisionTableHit(R, [], "COLLECT", "SUM") :- R = 0, !.
+decisionTableHit(R, [X|XS], "COLLECT", "SUM") :-
+	decisionTableHit(R1, XS, "COLLECT", "SUM"),
+	element_at(TableId, 1, X),
+	element_at(Key, 2, X),
+	element_at(Row, 3, X),
+	element_at(Id, 4, X),
+	outputEntry(TableId, Key, Row, Id, Value),
+	add(R, R1, Value),
+	!.
+
+
+%
+% Collection Min
+%
+decisionTableHit(R,[X],"COLLECT", "MIN") :-
+	R = X,
+	!.
+
+decisionTableHit(R,[X|XS],"COLLECT", "MIN") :-
+	decisionTableHit(R, XS, "COLLECT", "MIN"),
+	!.
+
+decisionTableHit(R,[X|XS],"COLLECT", "MIN") :-
+	decisionTableHit(R, XS, "COLLECT", "MIN"),
+	element_at(R1, 5, X),
+	element_at(R2, 5, R),
+	min(R1, R2),
+	R = X,
+	!.
+
+%
+% Collection Max
+%
+decisionTableHit(R,[X],"COLLECT", "MAX") :-
+	R = X,
+	!.
+
+decisionTableHit(R,[X|XS],"COLLECT", "MAX") :-
+	decisionTableHit(R, XS, "COLLECT", "MAX"),
+	!.
+
+decisionTableHit(R,[X|XS],"COLLECT", "MAX") :-
+	decisionTableHit(R, XS, "COLLECT", "MAX"),
+	element_at(R1, 5, X),
+	element_at(R2, 5, R),
+	println(["max(", R1, ",", R2, ")"]),
+	greaterThan(R1, R2),
+	R = X,
+	!.
+
+%
+% Collection Count
+%
+decisionTableHit(R,L,"COLLECT", "COUNT") :-
+	size(R, L),
+	!.
+
+%
+% Unique
+%
+decisionTableHit(R,[], "UNIQUE", Aggregation) :-
+	fail(),
+	!.
+decisionTableHit(R,[X], "UNIQUE", Aggregation) :-
+	R = X,
+	!.
+
+decisionTableHit(R,[X|XS], "UNIQUE", Aggregation) :-
+	R = "not unique entries",
+	!.
+
+
+%
+% First
+%
+decisionTableHit(R,[X],"FIRST", Aggregation) :- R = X, !.
+decisionTableHit(R,[X|XS],"FIRST", Aggregation) :-
+	decisionTableHit(R, XS, "FIRST", Aggregation),
+	!.
+decisionTableHit(Result, L,"FIRST", "") :-
+	decisionTableHit(R, L, "RULE ORDER", Aggregation),
+	head(H, R),
+	Result = H,
+	!.
+
+
+
+%
+% Rule Order
+%
+decisionTableHit(R,L,"RULE ORDER", Aggregation) :-
+	sortby_min(R, L, 3),
+	println(["Hit R: ", R]),
+	!.
+
+
+%
+% Not implemented Hit Policies.
+%
+
+decisionTableHit(Result, List, "PRIORITY", Aggregation) :-
+	Result = "Not implemented.",!.
+
+decisionTableHit(Result, List, "RULE ORDER", Aggregation) :-
+	Result = "Not implemented.",!.
+
+decisionTableHit(Result, List, HitPolicy, Aggregation) :-
+	Result = "Hit Policy unknown.".

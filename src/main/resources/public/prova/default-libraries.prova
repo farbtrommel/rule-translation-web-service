@@ -1,0 +1,2 @@
+:- eval(consult('./swrlb.prova')).
+:- eval(consult('./decision_table.prova')).

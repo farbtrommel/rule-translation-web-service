@@ -1,0 +1,31 @@
+
+li.L0, li.L1, li.L2, li.L3, li.L5, li.L6, li.L7, li.L8 {
+    list-style-type: decimal !important;
+}
+
+li.L1, li.L3, li.L5, li.L7, li.L9 {
+    background: #eee
+}
+
+.decisiontable .prettyprint {
+    min-height: 200px;
+    max-height: 200px;
+}
+
+.dmn-table .selected {
+    background-color: #E0F2FB !important;
+}
+
+.dmn-table .elected {
+    background-color: lightgreen !important;
+}
+
+.s-feel-code {
+    width: 100%;
+    min-height: 120px;
+}
+
+.s-feel-btn-group label {
+    min-height: 38px;
+    margin-bottom: 1.5em;
+}

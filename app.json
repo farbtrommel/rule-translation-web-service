@@ -1,0 +1,5 @@
+{
+  "name": "Rule Translation Web Service",
+  "description": "Rule Translation Web Service (RTWS) translate to and from RuleML. Furthermore, this App show an DMN decision table and the translation profile is.",
+  "image": "heroku/java"
+}

@@ -1,0 +1,15 @@
+{
+  "name": "Rule Web Api",
+  "homepage": "http://www.farbtrommel.de",
+  "authors": [
+    "Simon Koennecke <simon@farbtrommel.de>"
+  ],
+  "description": "Translate DMN to RuleML and RuleML to Prova",
+  "main": "",
+  "license": "MIT",
+  "dependencies": {
+    "dmn-js": "^0.5.0",
+    "bootstrap": "^3.3.6",
+    "MathJax": "^2.6.1"
+  }
+}
