@@ -1,0 +1,30 @@
+{
+  "name": "dmn-js",
+  "version": "0.5.0",
+  "authors": [
+    "bpmn.io"
+  ],
+  "description": "A DMN 1.1 renderer and web modeler",
+  "main": "dist/dmn-viewer.js",
+  "keywords": [
+    "models",
+    "table",
+    "renderer",
+    "modeler",
+    "dmn"
+  ],
+  "ignore": [
+    "test/*"
+  ],
+  "homepage": "http://bpmn.io",
+  "_release": "0.5.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.5.0",
+    "commit": "4999ffa1a532d4a21b05074ce81b9825e9c7e65e"
+  },
+  "_source": "https://github.com/bpmn-io/bower-dmn-js.git",
+  "_target": "^0.5.0",
+  "_originalSource": "dmn-js",
+  "_direct": true
+}
