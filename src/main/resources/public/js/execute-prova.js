@@ -43,7 +43,7 @@ jQuery(document).ready(function () {
 
     loadExample(defaultSample);
 
-    jQuery(".panel-example").click(function() {
+    jQuery(".panel-example").click(function(event) {
         loadExample(event.target.value);
     });
 

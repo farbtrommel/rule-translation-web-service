@@ -14,7 +14,7 @@
     </div>
 </div>
 
-<p>FEEL Expression can used as assigning or comparison.</p>
+<p>S-FEEL expression can used as assigning or comparison.</p>
 
 <div class="btn-group btn-group-justified s-feel-btn-group" data-toggle="buttons">
     <div class="btn-group" role="group">
